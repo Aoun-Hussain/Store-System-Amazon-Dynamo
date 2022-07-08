@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+package myMessage;
+
+service MyMessage {
+
+// client to manager, manager to coordinator
+rpc Put(KeyAndValue) returns (Empty){}
+
+// client from manager, manager from storages
+rpc Get(Key) returns (Value) {}
+
+// storage registers to manager
+rpc notifyToManager(StorageInfo) returns (Empty) {}
+
+// coordinator spread to storages
+rpc Spread(KeyAndValue) returns (Empty) {}
+
+// client to manager, manager to coordinator
+rpc PutOneNode(KeyAndValue) returns (Empty){}
+    
+}
+
+message KeyAndValue {
+  string key = 1;
+  repeated string value = 2;
+  repeated string prefList = 3;
+  int32 vectorClock = 4; // we only need this in Spread()
+}
+
+message Key{
+  string key = 1;
+}
+
+message Value{
+  repeated string value = 1;
+  int32 vectorClock = 2;
+}
+
+message StorageInfo{
+  string ip = 1;
+}
+
+message Empty{
+
+}
